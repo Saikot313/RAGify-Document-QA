@@ -447,16 +447,10 @@ The FastAPI application cannot reach the local LLM runtime, so question-answerin
 
 </details>
 
-## License
 
-This project is available under the [MIT License](LICENSE) — free to use, modify, and build on for your own learning or portfolio.
-
----
 
 <div align="center">
 
 Built by **Md. Sakender Saikot**
-<br>
-<sub>Add your LinkedIn / GitHub / Portfolio links here once you push this to your own repo.</sub>
 
 </div>
