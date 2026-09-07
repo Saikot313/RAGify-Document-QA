@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>RAGify — AI Document Assistant</title>
+<style>
+:root{
+  --bg:#070b14;--surface:#0f172a;--surface2:#111b30;--line:rgba(148,163,184,.14);
+  --text:#f8fafc;--muted:#94a3b8;--dim:#64748b;--primary:#6366f1;--violet:#7c3aed;
+  --green:#34d399;--radius:22px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:
+radial-gradient(circle at 50% -10%,rgba(99,102,241,.18),transparent 34%),
+radial-gradient(circle at 90% 45%,rgba(124,58,237,.09),transparent 28%),var(--bg);
+color:var(--text);font:14px/1.6 Inter,system-ui,-apple-system,sans-serif}
+a{color:inherit;text-decoration:none}
+.container{width:min(1120px,calc(100% - 36px));margin:auto}
+.nav{height:72px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:11px;font-weight:700;font-size:17px}
+.logo{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,var(--primary),var(--violet));box-shadow:0 10px 35px rgba(99,102,241,.28)}
+.pill{border:1px solid rgba(52,211,153,.16);background:rgba(52,211,153,.05);color:#86efac;padding:6px 10px;border-radius:999px;font-size:11px}
+.hero{text-align:center;padding:90px 0 75px}
+.eyebrow{display:inline-flex;padding:7px 12px;border:1px solid rgba(129,140,248,.18);background:rgba(129,140,248,.07);color:#c4b5fd;border-radius:999px;font-size:11px;font-weight:600}
+h1{font-size:clamp(42px,7vw,76px);line-height:1.02;letter-spacing:-.055em;margin:22px 0 18px}
+.gradient{background:linear-gradient(100deg,#a5b4fc,#c4b5fd,#818cf8);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{max-width:690px;margin:auto;color:var(--muted);font-size:16px}
+.actions{display:flex;justify-content:center;gap:10px;margin-top:28px;flex-wrap:wrap}
+.btn{padding:11px 17px;border-radius:11px;border:1px solid var(--line);background:rgba(148,163,184,.05);font-weight:600;font-size:12px}
+.btn.primary{border:0;background:linear-gradient(135deg,var(--primary),var(--violet));box-shadow:0 12px 30px rgba(99,102,241,.2)}
+.demo{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}
+.card{background:linear-gradient(145deg,rgba(30,41,59,.76),rgba(15,23,42,.9));border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:0 25px 70px rgba(0,0,0,.22)}
+.card h2{font-size:20px;margin:0 0 5px}
+.card .sub{color:var(--dim);font-size:12px;margin-bottom:20px}
+.drop{min-height:220px;border:1px dashed rgba(129,140,248,.35);border-radius:15px;display:grid;place-items:center;text-align:center;background:radial-gradient(circle,rgba(99,102,241,.09),transparent 65%);padding:20px}
+.docicon{width:50px;height:50px;margin:auto auto 12px;border-radius:15px;display:grid;place-items:center;background:rgba(129,140,248,.1);color:#a5b4fc;font-size:22px}
+.file{font-weight:600;overflow-wrap:anywhere}
+.meta{color:var(--dim);font-size:11px;margin-top:5px}
+button{font:inherit;cursor:pointer}
+.ask{width:100%;min-height:110px;resize:vertical;border:1px solid var(--line);outline:0;border-radius:13px;background:rgba(2,6,23,.42);color:var(--text);padding:14px}
+.ask:focus{border-color:rgba(129,140,248,.5);box-shadow:0 0 0 3px rgba(129,140,248,.07)}
+.askbtn{width:100%;margin-top:10px;padding:12px;border:0;border-radius:11px;color:white;font-weight:700;background:linear-gradient(135deg,var(--primary),var(--violet))}
+.answer{margin-top:18px;border-top:1px solid var(--line);padding-top:18px;display:none}
+.answer.show{display:block;animation:in .3s ease}
+@keyframes in{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+.badge{display:inline-block;color:#6ee7b7;background:rgba(52,211,153,.06);border:1px solid rgba(52,211,153,.12);padding:4px 8px;border-radius:999px;font-size:9px}
+.answerbox{margin-top:10px;padding:15px;border-radius:12px;background:rgba(2,6,23,.3);color:#dbe4f0}
+.sources{margin-top:14px;color:var(--muted);font:10px "IBM Plex Mono",monospace}
+.source{margin-top:6px;padding:9px;border:1px solid var(--line);border-radius:9px}
+.section{padding:85px 0}
+.section-title{text-align:center;font-size:30px;letter-spacing:-.03em;margin:0 0 10px}
+.section-sub{text-align:center;color:var(--muted);max-width:650px;margin:0 auto 34px}
+.flow{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.step{padding:18px 14px;border:1px solid var(--line);border-radius:15px;background:rgba(15,23,42,.65);text-align:center}
+.step strong{display:block;margin-top:8px;font-size:12px}.step span{color:var(--primary-light);font-size:20px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.stat{text-align:center;padding:22px;border:1px solid var(--line);border-radius:15px;background:rgba(15,23,42,.6)}
+.stat b{font-size:24px}.stat div{color:var(--dim);font-size:10px;margin-top:3px}
+.stack{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}.tag{padding:7px 10px;border:1px solid var(--line);border-radius:8px;color:var(--muted);font-size:10px;background:rgba(148,163,184,.03)}
+footer{border-top:1px solid var(--line);padding:24px 0 40px;text-align:center;color:var(--dim);font-size:10px}
+@media(max-width:800px){.demo{grid-template-columns:1fr}.flow{grid-template-columns:1fr 1fr}.stats{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.container{width:calc(100% - 22px)}.hero{padding:60px 0}.hero h1{font-size:42px}.flow{grid-template-columns:1fr}.nav .pill{display:none}}
+
+/* ---------- Dynamic AI background ---------- */
+.animated-background{
+  position:fixed;
+  inset:0;
+  overflow:hidden;
+  pointer-events:none;
+  z-index:-1;
+  background:
+    radial-gradient(circle at 50% -15%,rgba(99,102,241,.14),transparent 38%),
+    #070b14;
+}
+.orb{
+  position:absolute;
+  border-radius:50%;
+  filter:blur(95px);
+  opacity:.11;
+  will-change:transform;
+}
+.orb-1{
+  width:430px;height:430px;left:-150px;top:-190px;
+  background:#6366f1;
+  animation:ragOrb1 18s ease-in-out infinite alternate;
+}
+.orb-2{
+  width:360px;height:360px;right:-120px;top:28%;
+  background:#7c3aed;
+  animation:ragOrb2 22s ease-in-out infinite alternate;
+}
+.orb-3{
+  width:300px;height:300px;left:38%;bottom:-190px;
+  background:#4f46e5;opacity:.075;
+  animation:ragOrb3 25s ease-in-out infinite alternate;
+}
+@keyframes ragOrb1{
+  0%{transform:translate3d(0,0,0) scale(1)}
+  50%{transform:translate3d(120px,80px,0) scale(1.13)}
+  100%{transform:translate3d(45px,165px,0) scale(.96)}
+}
+@keyframes ragOrb2{
+  0%{transform:translate3d(0,0,0) scale(1)}
+  50%{transform:translate3d(-100px,-65px,0) scale(1.12)}
+  100%{transform:translate3d(-35px,90px,0) scale(.93)}
+}
+@keyframes ragOrb3{
+  0%{transform:translate3d(0,0,0) scale(1)}
+  50%{transform:translate3d(100px,-100px,0) scale(1.16)}
+  100%{transform:translate3d(-75px,-40px,0) scale(.91)}
+}
+.grid-overlay{
+  position:absolute;
+  inset:0;
+  opacity:.20;
+  background-image:
+    linear-gradient(rgba(148,163,184,.032) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(148,163,184,.032) 1px,transparent 1px);
+  background-size:55px 55px;
+  mask-image:radial-gradient(ellipse at center,black 8%,transparent 75%);
+  -webkit-mask-image:radial-gradient(ellipse at center,black 8%,transparent 75%);
+}
+.particles{position:absolute;inset:0}
+.particles span{
+  position:absolute;width:2px;height:2px;border-radius:50%;
+  background:rgba(165,180,252,.65);
+  box-shadow:0 0 8px rgba(129,140,248,.6);
+  opacity:0;
+  animation:ragParticle 12s linear infinite;
+}
+.particles span:nth-child(1){left:8%;top:82%;animation-delay:0s}
+.particles span:nth-child(2){left:17%;top:68%;animation-delay:2s}
+.particles span:nth-child(3){left:27%;top:91%;animation-delay:4s}
+.particles span:nth-child(4){left:39%;top:74%;animation-delay:1s}
+.particles span:nth-child(5){left:48%;top:88%;animation-delay:6s}
+.particles span:nth-child(6){left:57%;top:70%;animation-delay:3s}
+.particles span:nth-child(7){left:66%;top:84%;animation-delay:7s}
+.particles span:nth-child(8){left:74%;top:63%;animation-delay:5s}
+.particles span:nth-child(9){left:83%;top:89%;animation-delay:8s}
+.particles span:nth-child(10){left:91%;top:72%;animation-delay:2.5s}
+.particles span:nth-child(11){left:34%;top:58%;animation-delay:9s}
+.particles span:nth-child(12){left:61%;top:52%;animation-delay:10s}
+@keyframes ragParticle{
+  0%{opacity:0;transform:translate3d(0,30px,0)}
+  15%{opacity:.55}
+  50%{opacity:.30;transform:translate3d(25px,-180px,0)}
+  85%{opacity:.15}
+  100%{opacity:0;transform:translate3d(-15px,-360px,0)}
+}
+@media(prefers-reduced-motion:reduce){
+  .orb,.particles span{animation:none}
+}
+
+</style>
+</head>
+<body>
+
+<div class="animated-background" aria-hidden="true">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+  <div class="grid-overlay"></div>
+  <div class="particles">
+    <span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span>
+  </div>
+</div>
+
+<div class="container">
+  <nav class="nav">
+    <a class="brand" href="#"><span class="logo">✦</span><span>RAGify</span></a>
+    <span class="pill">● Local AI</span>
+  </nav>
+
+  <section class="hero">
+    <span class="eyebrow">✦ RETRIEVAL-AUGMENTED GENERATION</span>
+    <h1>Turn documents into<br><span class="gradient">intelligent answers.</span></h1>
+    <p>RAGify is an end-to-end document intelligence system that lets users ask natural-language questions about PDFs and receive source-grounded answers.</p>
+    <div class="actions">
+      <a class="btn primary" href="#demo">Try Interactive Demo</a>
+      <a class="btn" href="#architecture">Explore Architecture</a>
+    </div>
+  </section>
+
+  <section id="demo" class="demo">
+    <div class="card">
+      <h2>📄 Document</h2>
+      <div class="sub">Indexed knowledge base</div>
+      <div class="drop">
+        <div>
+          <div class="docicon">PDF</div>
+          <div class="file">Transformer-Based Sentence-Level Extraction of Software Requirements</div>
+          <div class="meta">6 pages · 47 chunks · FAISS indexed</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>✦ Ask AI</h2>
+      <div class="sub">Query your indexed document</div>
+      <textarea id="q" class="ask">What was the main research problem addressed in this paper?</textarea>
+      <button class="askbtn" id="ask">✦ Ask AI</button>
+      <div class="answer" id="answer">
+        <span class="badge">● Grounded answer</span>
+        <div class="answerbox" id="answerText"></div>
+        <div class="sources"><b>SOURCE</b><div class="source">Transformer-Based Sentence-Level Extraction... · Page 6</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="architecture" class="section">
+    <h2 class="section-title">Built as a complete RAG pipeline</h2>
+    <p class="section-sub">Every stage is explicit: from document ingestion and semantic retrieval to local LLM generation and traceable citations.</p>
+    <div class="flow">
+      <div class="step"><span>01</span><strong>PDF Loading</strong></div>
+      <div class="step"><span>02</span><strong>Chunking</strong></div>
+      <div class="step"><span>03</span><strong>Embeddings</strong></div>
+      <div class="step"><span>04</span><strong>FAISS Retrieval</strong></div>
+      <div class="step"><span>05</span><strong>LLM + Sources</strong></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title">Project at a glance</h2>
+    <p class="section-sub">A portfolio-ready GenAI application focused on practical RAG engineering.</p>
+    <div class="stats">
+      <div class="stat"><b>RAG</b><div>Architecture</div></div>
+      <div class="stat"><b>FAISS</b><div>Vector Search</div></div>
+      <div class="stat"><b>Ollama</b><div>Local LLM</div></div>
+      <div class="stat"><b>FastAPI</b><div>REST Backend</div></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title">Technology stack</h2>
+    <p class="section-sub">Modern open-source components working together in a modular architecture.</p>
+    <div class="stack">
+      <span class="tag">Python</span><span class="tag">FastAPI</span><span class="tag">LangChain</span>
+      <span class="tag">FAISS</span><span class="tag">Sentence Transformers</span><span class="tag">Ollama</span>
+      <span class="tag">Llama 3.2</span><span class="tag">PyPDF</span><span class="tag">JavaScript</span>
+    </div>
+  </section>
+
+  <footer>RAGify · Privacy-first document intelligence · Built with local AI</footer>
+</div>
+
+<script>
+const answers = [
+  "The paper addresses the challenge of extracting software requirements at the sentence level, using a transformer-based DeBERTa model on the PURE dataset.",
+  "The research focuses on improving sentence-level software requirements extraction by applying a transformer-based DeBERTa approach to the PURE dataset.",
+  "The main problem is automated software requirements extraction from natural-language text, with the study investigating a DeBERTa-based transformer approach."
+];
+let i=0;
+document.getElementById("ask").addEventListener("click",()=>{
+  const btn=document.getElementById("ask");
+  const box=document.getElementById("answer");
+  const text=document.getElementById("answerText");
+  btn.textContent="✦ Thinking...";
+  btn.disabled=true;
+  box.classList.remove("show");
+  setTimeout(()=>{
+    text.textContent=answers[i++%answers.length];
+    box.classList.add("show");
+    btn.textContent="✦ Ask AI";
+    btn.disabled=false;
+  },650);
+});
+</script>
+</body>
+</html>
