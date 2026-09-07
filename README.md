@@ -74,7 +74,7 @@ RAGify uses a modular **Retrieval-Augmented Generation** pipeline that separates
 
 <div align="center">
 
-<img src="docs/architecture.png" alt="RAGify System Architecture" width="1200">
+<img src="docs/architechture.png" alt="RAGify System Architecture" width="1200">
 
 </div>
 
@@ -447,16 +447,10 @@ The FastAPI application cannot reach the local LLM runtime, so question-answerin
 
 </details>
 
-## License
 
-This project is available under the [MIT License](LICENSE) — free to use, modify, and build on for your own learning or portfolio.
-
----
 
 <div align="center">
 
 Built by **Md. Sakender Saikot**
-<br>
-<sub>Add your LinkedIn / GitHub / Portfolio links here once you push this to your own repo.</sub>
 
 </div>
