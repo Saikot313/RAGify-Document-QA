@@ -74,7 +74,7 @@ RAGify uses a modular **Retrieval-Augmented Generation** pipeline that separates
 
 <div align="center">
 
-<img src="docs/architecture.png" alt="RAGify System Architecture" width="1200">
+<img src="docs/architechture.png" alt="RAGify System Architecture" width="1200">
 
 </div>
 
