@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+tests/
+data/uploads/*
+data/vector_store/*
+.env
+.git/
+.gitignore
+README.md
+requirements-dev.txt

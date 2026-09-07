@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>RAGify | AI Document Assistant</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+    rel="stylesheet" />
+
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+
+<body>
+
+  <div class="background-glow glow-one"></div>
+  <div class="background-glow glow-two"></div>
+
+  <div class="app-shell">
+
+    <!-- Header -->
+    <header class="topbar">
+
+      <div class="brand">
+        <div class="brand-icon">
+          <span>✦</span>
+        </div>
+
+        <div>
+          <div class="brand-name">RAGify</div>
+          <div class="brand-subtitle">AI Document Assistant</div>
+        </div>
+      </div>
+
+      <div class="status-pill">
+        <span class="status-dot"></span>
+        Local AI
+      </div>
+
+    </header>
+
+
+    <!-- Hero -->
+    <section class="hero">
+
+      <div class="hero-badge">
+        <span>✦</span>
+        Retrieval-Augmented Generation
+      </div>
+
+      <h1>
+        Ask questions.<br>
+        <span>Get answers grounded in your documents.</span>
+      </h1>
+
+      <p>
+        Upload a PDF, index its content, and ask intelligent questions
+        with source-backed answers powered by local AI.
+      </p>
+
+    </section>
+
+
+    <!-- Main workspace -->
+    <main class="workspace">
+
+      <!-- Upload Card -->
+      <section class="panel upload-panel">
+
+        <div class="panel-header">
+
+          <div>
+            <div class="step-label">
+              <span>01</span>
+              DOCUMENT
+            </div>
+
+            <h2>Upload your document</h2>
+
+            <p>
+              Add a PDF to create a searchable knowledge base.
+            </p>
+          </div>
+
+          <div class="panel-icon">
+            📄
+          </div>
+
+        </div>
+
+
+        <form id="upload-form" class="upload-form">
+
+          <label for="pdf-file" class="drop-zone" id="drop-zone">
+
+            <div class="upload-icon">
+              ↑
+            </div>
+
+            <div class="drop-title" id="file-name-display">
+              Drop your PDF here
+            </div>
+
+            <div class="drop-description">
+              or click to browse from your computer
+            </div>
+
+            <div class="file-type">
+              PDF files only
+            </div>
+
+          </label>
+
+          <input type="file" id="pdf-file" name="file" accept="application/pdf" required />
+
+          <button type="submit" id="upload-btn" class="primary-btn">
+
+            <span class="btn-icon">↗</span>
+
+            <span class="btn-text">Upload & Index</span>
+
+          </button>
+
+        </form>
+
+
+        <div id="upload-status" class="status" aria-live="polite"></div>
+
+
+        <div class="indexed-section">
+
+          <div class="section-label">
+            INDEXED DOCUMENTS
+          </div>
+
+          <ul id="indexed-files" class="indexed-files"></ul>
+
+        </div>
+
+      </section>
+
+
+      <!-- Question Card -->
+      <section class="panel ask-panel">
+
+        <div class="panel-header">
+
+          <div>
+            <div class="step-label">
+              <span>02</span>
+              ASK AI
+            </div>
+
+            <h2>Ask your document</h2>
+
+            <p>
+              Ask anything about the indexed content.
+            </p>
+          </div>
+
+          <div class="panel-icon ai-icon">
+            ✦
+          </div>
+
+        </div>
+
+
+        <form id="ask-form" class="ask-form">
+
+          <div class="question-wrapper">
+
+            <div class="question-label">
+              YOUR QUESTION
+            </div>
+
+            <textarea id="question-input" placeholder="What is the main research problem addressed in this paper?"
+              rows="5" required></textarea>
+
+            <div class="textarea-hint">
+              Answers are generated only from retrieved document context.
+            </div>
+
+          </div>
+
+
+          <button type="submit" id="ask-btn" class="primary-btn ask-button">
+
+            <span class="btn-icon">✦</span>
+
+            <span class="btn-text">Ask AI</span>
+
+          </button>
+
+        </form>
+
+
+        <div id="ask-status" class="status" aria-live="polite"></div>
+
+
+        <!-- Answer -->
+        <div id="answer-block" class="answer-block hidden">
+
+          <div class="answer-header">
+
+            <div class="answer-title">
+              <div class="answer-icon">✦</div>
+
+              <div>
+                <div class="answer-label">AI RESPONSE</div>
+                <h3>Answer</h3>
+              </div>
+            </div>
+
+            <div class="grounded-badge">
+              <span>●</span>
+              Grounded
+            </div>
+
+          </div>
+
+
+          <div class="answer-content">
+            <p id="answer-text"></p>
+          </div>
+
+
+          <div class="sources-section">
+
+            <div class="sources-header">
+
+              <div>
+                <div class="sources-label">
+                  SOURCES
+                </div>
+
+                <h4>Referenced passages</h4>
+              </div>
+
+              <div class="source-count">
+                <span id="source-count">0</span>
+              </div>
+
+            </div>
+
+
+            <ul id="sources-list" class="sources-list"></ul>
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </main>
+
+
+    <!-- Tech stack -->
+    <section class="tech-stack">
+
+      <span>POWERED BY</span>
+
+      <div class="tech-item">
+        <b>FastAPI</b>
+      </div>
+
+      <div class="tech-item">
+        <b>LangChain</b>
+      </div>
+
+      <div class="tech-item">
+        <b>FAISS</b>
+      </div>
+
+      <div class="tech-item">
+        <b>Ollama</b>
+      </div>
+
+      <div class="tech-item">
+        <b>Local Embeddings</b>
+      </div>
+
+    </section>
+
+
+    <footer class="footer">
+
+      <span>RAGify</span>
+
+      <span class="footer-separator">•</span>
+
+      <span>Privacy-first document intelligence</span>
+
+    </footer>
+
+  </div>
+
+
+  <script src="/static/script.js"></script>
+
+</body>
+
+</html>

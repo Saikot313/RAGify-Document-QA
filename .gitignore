@@ -1,0 +1,24 @@
+# Environment / secrets
+.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.pytest_cache/
+
+# Virtual environments
+venv/
+.venv/
+
+# Runtime data (uploaded PDFs + FAISS index) — never commit user data
+data/uploads/*
+!data/uploads/.gitkeep
+data/vector_store/*
+!data/vector_store/.gitkeep
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
