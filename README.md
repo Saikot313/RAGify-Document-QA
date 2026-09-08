@@ -11,7 +11,7 @@ An end-to-end Retrieval-Augmented Generation (RAG) application built with FastAP
 [![LangChain](https://img.shields.io/badge/LangChain-RAG-1C3C3C?style=for-the-badge)](https://www.langchain.com/)
 [![FAISS](https://img.shields.io/badge/FAISS-Vector_Search-0467DF?style=for-the-badge)](https://github.com/facebookresearch/faiss)
 [![Ollama](https://img.shields.io/badge/Ollama-Local_LLM-black?style=for-the-badge)](https://www.docker.com/)
-[![Local AI](https://img.shields.io/badge/AI-Local%20Inference-success?style=for-the-badge)]
+[![Local AI](https://img.shields.io/badge/AI-Local%20Inference-success?style=for-the-badge)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](#license)
 
 </div>
